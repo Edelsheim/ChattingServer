@@ -14,11 +14,19 @@ Server::Server(const unsigned short port)
 	this->completionThreads.clear();
 	this->sessions.clear();
 
+	this->serverRun = false;
 	printf("Server port : %d\n", this->serverPort);
 }
 
 Server::~Server()
 {
+	this->serverRun = false;
+
+	for (auto& session : this->sessions) {
+		session.second->disconnect();
+	}
+	this->sessions.clear();
+
 	if (this->listenSocketServer != INVALID_SOCKET) {
 		::closesocket(this->listenSocketServer);
 	}
@@ -26,6 +34,10 @@ Server::~Server()
 	if (this->iocp != NULL) {
 		::CloseHandle(this->iocp);
 	}
+
+	for (auto& thread : this->completionThreads)
+		if (thread.joinable())
+			thread.join();
 
 	::WSACleanup();
 }
@@ -60,6 +72,8 @@ bool Server::run()
 		::closesocket(this->listenSocketServer);
 		return false;
 	}
+
+	this->serverRun = true;
 
 	this->makeWorkingThreads();
 
@@ -113,6 +127,8 @@ bool Server::watchSocket(SOCKET& socket, HANDLE& cp, const ULONG_PTR& watchKey)
 bool Server::acceptSocket(SOCKET& socket, HANDLE& cp)
 {
 	while (true) {
+		if (this->serverRun == false) break;
+
 		printf("Ready accept client...\n");
 
 		SOCKADDR_IN client_addr{};
@@ -154,16 +170,32 @@ bool Server::acceptSocket(SOCKET& socket, HANDLE& cp)
 						this->sessions.unsafe_erase(id);
 					}
 				}
+
+				std::string join_message = "New client " + std::to_string(id) + " join!";
+				WSABUF new_client_join{};
+				new_client_join.len = (ULONG)join_message.length();
+				new_client_join.buf = (CHAR*)join_message.c_str();
+
+				for (auto& other_session : this->sessions) {
+					if (other_session.first != id)
+						other_session.second->send(new_client_join);
+				}
 				printf("Watch client start.\n");
 			}
 		}
 	}
+
+	for (auto& thread : this->completionThreads)
+		if (thread.joinable())
+			thread.join();
+
 	return true;
 }
 
 DWORD __stdcall Server::completionThread()
 {
 	while (true) {
+		if (this->serverRun == false) break;
 		DWORD bytes_trans = 0;
 		DWORD flag = 0;
 		size_t key = 0;
@@ -186,9 +218,15 @@ DWORD __stdcall Server::completionThread()
 				printf("%lld socket bytes transferred 0\n", key);
 			}
 			else {
+				for (auto& other_session : this->sessions) {
+					if (other_session.first != key)
+						other_session.second->send(socket_info->buf);
+				}
+
 				session->second->receive(socket_info);
 			}
 		}
-		
 	}
+
+	return 0;
 }

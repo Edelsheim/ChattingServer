@@ -35,6 +35,13 @@ void Session::receive(SOCKETINFO* clientData)
 	::WSARecv(this->socket, &clientData->buf, 1, &bytes_transferred, &flag, clientData, NULL);
 }
 
+void Session::send(const WSABUF sendData)
+{
+	DWORD bytes_send = 0;
+	DWORD flag = 0;
+	::WSASend(this->socket, (LPWSABUF)&sendData, 1, &bytes_send, flag, NULL, NULL);
+}
+
 void Session::disconnect()
 {
 	if (this->socket != INVALID_SOCKET) {

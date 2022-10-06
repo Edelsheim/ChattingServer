@@ -5,6 +5,7 @@
 #include <concurrent_unordered_map.h>
 #include <thread>
 #include <memory>
+#include <atomic>
 
 #include <WinSock2.h>
 #include <WS2tcpip.h>
@@ -24,6 +25,8 @@ private:
 	HANDLE iocp;
 	SOCKET listenSocketServer;
 	SOCKADDR_IN serverAddr;
+
+	std::atomic_bool serverRun;
 
 	std::vector<std::thread> completionThreads;
 

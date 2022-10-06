@@ -15,6 +15,7 @@ public:
 	~Session();
 
 	void receive(SOCKETINFO* clientData);
+	void send(const WSABUF sendData);
 	void disconnect();
 
 	const SOCKET getSocket() const;
