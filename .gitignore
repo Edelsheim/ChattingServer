@@ -27,10 +27,8 @@
 *.lib
 
 # Executables
-*.exe
 *.out
 *.app
 /.vs/ChattingServer
 /ChattingClient/x64
 /ChattingServer/x64
-/x64
