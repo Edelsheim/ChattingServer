@@ -1,4 +1,5 @@
 #include "client.h"
+#include "message_buffer.h"
 
 Client::Client()
 {
@@ -57,8 +58,15 @@ const int Client::send(const char* message, const size_t messageSize)
 	DWORD flag = 0;
 
 	WSABUF buff{};
-	buff.buf = (CHAR*)message;
-	buff.len = (ULONG)messageSize;
+	char buf[MAX_BUF] = { 0, };
+	size_t buf_size = 0;
+	MessageStruct ms{};
+	ms.type = MessageType::send;
+	memcpy(ms.message, message, messageSize);
+	MessageBuffer::Serialize(ms, buf_size, buf);
+
+	buff.buf = (CHAR*)buf;
+	buff.len = (ULONG)buf_size;
 	return ::WSASend(this->connecter, &buff, 1, &byte_send, flag, NULL, NULL);
 }
 
@@ -80,8 +88,10 @@ void Client::receive()
 		DWORD bytes_trans = 0;
 		DWORD flag = 0;
 		int result = ::WSARecv(this->connecter, &socket_info.buf, 1, &bytes_trans, &flag, NULL, NULL);
+		
+		MessageStruct ms = MessageBuffer::Deserialize(socket_info.buf.buf);
 		if (bytes_trans > 0) {
-			printf("receive : %s\n", socket_info.buf.buf);
+			printf("receive : %d - %s\n", ms.type, ms.message);
 		}
 	}
 }

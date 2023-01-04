@@ -1,4 +1,5 @@
 #include "server.h"
+#include "message_buffer.h"
 
 Server::Server(const unsigned short port)
 {
@@ -172,14 +173,21 @@ bool Server::acceptSocket(SOCKET& socket, HANDLE& cp)
 				}
 
 				std::string join_message = "New client " + std::to_string(id) + " join!";
-				WSABUF new_client_join{};
-				new_client_join.len = (ULONG)join_message.length();
-				new_client_join.buf = (CHAR*)join_message.c_str();
 
-				for (auto& other_session : this->sessions) {
-					if (other_session.first != id)
-						other_session.second->send(new_client_join);
+				MessageStruct message{};
+				message.type = MessageType::alert;
+				memcpy(message.message, join_message.c_str(), join_message.length());
+
+				WSABUF new_client_join{};
+				char message_buffer[MAX_BUF] = { 0, };
+				new_client_join.buf = message_buffer;
+				if (MessageBuffer::Serialize(message, (size_t&)new_client_join.len, new_client_join.buf)) {
+					for (auto& other_session : this->sessions) {
+						if (other_session.first != id)
+							other_session.second->send(new_client_join);
+					}
 				}
+
 				printf("Watch client start.\n");
 			}
 		}

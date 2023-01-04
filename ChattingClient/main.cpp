@@ -7,10 +7,11 @@ int main(void) {
 	if (client->connect("127.0.0.1", 3501)) {
 
 		while (true) {
-			std::string send_data = "";
-			printf("> ");
-			std::cin >> send_data;
+			std::string send_data = "test";
+			//printf("> ");
+			//std::cin >> send_data;
 			client->send(send_data);
+			Sleep(1000);
 		}
 	}
 

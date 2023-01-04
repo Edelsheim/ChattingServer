@@ -1,5 +1,6 @@
 #include "session.h"
-
+#include "common.h"
+#include "message_buffer.h"
 Session::Session(const size_t& id, const SOCKET& acceptSocket) :
 	socket(acceptSocket),
 	id(id)
@@ -20,8 +21,8 @@ void Session::receive(SOCKETINFO* clientData)
 	DWORD bytes_transferred = 0;
 	DWORD flag = 0;
 
-	std::string data = std::string(clientData->buf.buf);
-	printf("(%lld) data : %s\n", this->id, data.c_str());
+	MessageStruct ms = MessageBuffer::Deserialize(clientData->buf.buf);
+	printf("(%lld) data : %s\n", this->id, ms.message);
 
 	::WSASend(this->socket, &clientData->buf, 1, &bytes_transferred, flag, NULL, NULL);
 

@@ -137,7 +137,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\channel.h" />
+    <ClInclude Include="src\channel_manager.h" />
     <ClInclude Include="src\common.h" />
+    <ClInclude Include="src\message_buffer.h" />
     <ClInclude Include="src\server.h" />
     <ClInclude Include="src\session.h" />
   </ItemGroup>

@@ -29,5 +29,8 @@
     <ClInclude Include="src\common.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="src\message_buffer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
