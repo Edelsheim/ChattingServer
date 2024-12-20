@@ -132,8 +132,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\client.h" />
-    <ClInclude Include="src\common.h" />
-    <ClInclude Include="src\message_buffer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.vcxproj">
+      <Project>{8e22c542-64a7-4559-bbf8-561b1262ce2d}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

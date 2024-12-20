@@ -30,7 +30,10 @@
 *.exe
 *.out
 *.app
+/.vs/ChattingClient
 /.vs/ChattingServer
 /ChattingClient/x64
 /ChattingServer/x64
+/Common/x64
 /x64
+/.vs

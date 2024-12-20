@@ -6,7 +6,7 @@
 #include <WinSock2.h>
 #pragma comment(lib, "Ws2_32.lib")
 
-#include "common.h"
+#include "../../Common/src/common.h"
 
 class Session {
 public:

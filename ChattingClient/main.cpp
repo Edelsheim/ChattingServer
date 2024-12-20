@@ -8,10 +8,10 @@ int main(void) {
 
 		while (true) {
 			std::string send_data = "test";
-			//printf("> ");
-			//std::cin >> send_data;
+			printf("> ");
+			std::cin >> send_data;
 			client->send(send_data);
-			Sleep(1000);
+			// Sleep(1000);
 		}
 	}
 

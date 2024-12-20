@@ -1,5 +1,5 @@
 #include "client.h"
-#include "message_buffer.h"
+#include "../../Common/src/message_buffer.h"
 
 Client::Client()
 {

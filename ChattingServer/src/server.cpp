@@ -1,5 +1,5 @@
 #include "server.h"
-#include "message_buffer.h"
+#include "../../Common/src/message_buffer.h"
 
 Server::Server(const unsigned short port)
 {

@@ -1,6 +1,7 @@
 #include "session.h"
-#include "common.h"
-#include "message_buffer.h"
+#include "../../Common/src/common.h"
+#include "../../Common/src/message_buffer.h"
+
 Session::Session(const size_t& id, const SOCKET& acceptSocket) :
 	socket(acceptSocket),
 	id(id)
